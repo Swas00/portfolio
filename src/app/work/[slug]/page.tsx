@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
@@ -17,7 +18,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return p ? { title: `${p.name} case study`, description: p.tagline + " " + p.summary } : {};
 }
 
-export default async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
+export default function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
+  // Reading the URL param happens inside Suspense so the rest of the shell can prerender.
+  return (
+    <Suspense fallback={<div className="min-h-[100svh]" aria-busy="true" />}>
+      <CaseStudy params={params} />
+    </Suspense>
+  );
+}
+
+async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const idx = withStudy.findIndex((x) => x.slug === slug);
   if (idx < 0) notFound();

@@ -22,6 +22,7 @@ export default function ScrollBackdrop() {
         viewBox="-500 -500 1000 1000"
         className="absolute left-1/2 top-1/2 h-[110vmin] w-[110vmin] -ml-[55vmin] -mt-[55vmin]"
         style={{ x, y, rotate, opacity }}
+        suppressHydrationWarning
         fill="none"
         stroke="#f1ede3"
         strokeOpacity="0.16"
@@ -34,6 +35,7 @@ export default function ScrollBackdrop() {
       </motion.svg>
 
       <motion.div
+        suppressHydrationWarning
         className="absolute inset-y-0 left-0 hidden w-5 md:block"
         style={{
           backgroundPositionY: rulerY,

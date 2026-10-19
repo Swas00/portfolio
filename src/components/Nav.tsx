@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, useScroll, useSpring } from "motion/react";
+import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { nav, profile } from "@/data/profile";
 import CommandPalette from "./CommandPalette";
 
@@ -18,15 +18,28 @@ export default function Nav() {
   useEffect(() => {
     if (!home) return;
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id === "top" ? "" : e.target.id)),
       { rootMargin: "-45% 0px -50% 0px" },
     );
-    nav.forEach(({ id }) => {
+    ["top", ...nav.map((n) => n.id)].forEach((id) => {
       const el = document.getElementById(id);
       if (el) io.observe(el);
     });
     return () => io.disconnect();
   }, [home]);
+
+  // Close the mobile menu on Escape, lock page scroll while it is open.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onEsc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onEsc);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onEsc);
+    };
+  }, [open]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -41,6 +54,11 @@ export default function Nav() {
 
   return (
     <>
+      <motion.div
+        aria-hidden="true"
+        className="fixed inset-x-0 top-0 z-[60] h-[2px] origin-left bg-accent-bright"
+        style={{ scaleX: progress }}
+      />
       <header className="fixed inset-x-0 top-0 z-50 mix-blend-difference text-paper">
         <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between px-5 md:px-10">
           <Link href="/" className="eyebrow link-draw" aria-label="Swastik Sahu, home">
@@ -54,13 +72,13 @@ export default function Nav() {
                 aria-current={active === n.id ? "location" : undefined}
                 className="eyebrow link-draw relative"
               >
-                <span className={active === n.id ? "opacity-100" : "opacity-70"}>{n.label}</span>
+                <span className={`transition-opacity duration-300 ${active === n.id ? "opacity-100" : "opacity-60 hover:opacity-100"}`}>{n.label}</span>
                 {active === n.id && <motion.span layoutId="nav-dot" className="absolute -left-3 top-1/2 size-1.5 -translate-y-1/2 rounded-full bg-current" />}
               </Link>
             ))}
             <button
               onClick={() => setPalette(true)}
-              className="eyebrow border border-current px-2 py-1 opacity-80 transition-opacity hover:opacity-100"
+              className="eyebrow border border-current px-2 py-1 opacity-70 transition-[opacity,transform] duration-200 hover:opacity-100 active:translate-y-px"
               aria-label="Open command menu"
             >
               ⌘K
@@ -75,22 +93,36 @@ export default function Nav() {
             {open ? "Close" : "Menu"}
           </button>
         </div>
-        <motion.div className="h-px origin-left bg-current" style={{ scaleX: progress }} />
       </header>
 
-      {open && (
-        <div id="mobile-menu" className="fixed inset-0 z-40 bg-ink px-5 pt-24 text-paper md:hidden on-dark">
-          <ul className="flex flex-col gap-2">
-            {nav.map((n) => (
-              <li key={n.id}>
-                <Link href={`/#${n.id}`} onClick={() => setOpen(false)} className="display block py-1 text-6xl">
-                  {n.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="mobile-menu"
+            id="mobile-menu"
+            className="on-dark fixed inset-0 z-40 bg-ink px-5 pt-24 text-paper md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+          >
+            <motion.ul
+              initial="hide"
+              animate="show"
+              variants={{ hide: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}
+              className="flex flex-col gap-2"
+            >
+              {nav.map((n) => (
+                <motion.li key={n.id} variants={{ hide: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }}>
+                  <Link href={`/#${n.id}`} onClick={() => setOpen(false)} className="display block py-1 text-6xl transition-colors duration-200 active:text-accent-bright">
+                    {n.label}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <CommandPalette open={palette} onClose={() => setPalette(false)} />
     </>
   );

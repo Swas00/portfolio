@@ -79,35 +79,15 @@ body {
   background-size: 100% 1px;
 }
 
-/* Opening curtain: pure CSS so it never blocks the page if JS is slow */
-.intro {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  background: var(--ink);
-  color: var(--paper);
-  pointer-events: none;
-  overflow: hidden;
-  animation: intro-out 0.9s cubic-bezier(0.76, 0, 0.24, 1) 1.25s forwards;
-}
-.intro span {
-  display: block;
-  animation: intro-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
-}
-@keyframes intro-in {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-@keyframes intro-out {
-  from { clip-path: inset(0 0 0 0); }
-  to { clip-path: inset(0 0 100% 0); visibility: hidden; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .intro { display: none; }
+  /* Scroll reveals start hidden in the server HTML. Reduced-motion visitors get all content immediately. */
+  main [style*="opacity:0"],
+  main [style*="translateY"],
+  main [style*="scale"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;

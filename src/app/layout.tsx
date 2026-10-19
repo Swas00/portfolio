@@ -4,6 +4,7 @@ import "./globals.css";
 import { profile } from "@/data/profile";
 import Cursor from "@/components/Cursor";
 import Nav from "@/components/Nav";
+import Providers from "@/components/Providers";
 import ScrollBackdrop from "@/components/ScrollBackdrop";
 
 const display = Instrument_Serif({ variable: "--font-display", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
@@ -37,9 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body>
-        <div className="intro" aria-hidden="true">
-          <span className="display text-6xl">SS</span>
-        </div>
+        <Providers>
         <a
           href="#main"
           className="fixed left-4 top-4 z-[110] -translate-y-20 bg-ink px-4 py-2 text-paper focus:translate-y-0"
@@ -49,7 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ScrollBackdrop />
         <Nav />
         <Cursor />
-        <main id="main">{children}</main>
+        {/* If JS is unavailable, never leave content hidden at its pre-animation state. */}
+        <noscript>
+          <style>{`[style*="opacity:0"],[style*="translateY"],[style*="scale"]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+        <main id="main" tabIndex={-1} className="outline-none">{children}</main>
+        </Providers>
       </body>
     </html>
   );

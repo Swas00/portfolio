@@ -9,7 +9,7 @@ export type Project = {
   repo: string;
   live?: string;
   /** Short facts shown beside the project. Every one is stated in the repo README or resume. */
-  facts: { label: string; value: string }[];
+  facts: { label: string; value: string; count?: boolean }[];
   caseStudy?: {
     problem: string;
     role: string;
@@ -31,9 +31,9 @@ export const projects: Project[] = [
     stack: ["React", "TypeScript", "Node.js", "Express", "FastAPI", "scikit-learn", "MongoDB"],
     repo: "https://github.com/Swas00/DropoutGuard-AI",
     facts: [
-      { label: "Accuracy", value: "86.78%" },
-      { label: "ROC-AUC", value: "0.9251" },
-      { label: "Records", value: "4,424" },
+      { label: "Accuracy", value: "86.78%", count: true },
+      { label: "ROC-AUC", value: "0.9251", count: true },
+      { label: "Records", value: "4,424", count: true },
     ],
     caseStudy: {
       problem:

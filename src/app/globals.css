@@ -113,3 +113,10 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Section content sits above the fixed scroll backdrop (z-1); section backgrounds sit below it. */
+main > section > div,
+main > article > div {
+  position: relative;
+  z-index: 2;
+}

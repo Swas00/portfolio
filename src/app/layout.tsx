@@ -4,6 +4,7 @@ import "./globals.css";
 import { profile } from "@/data/profile";
 import Cursor from "@/components/Cursor";
 import Nav from "@/components/Nav";
+import ScrollBackdrop from "@/components/ScrollBackdrop";
 
 const display = Instrument_Serif({ variable: "--font-display", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
 const sans = Geist({ variable: "--font-sans-body", subsets: ["latin"] });
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <ScrollBackdrop />
         <Nav />
         <Cursor />
         <main id="main">{children}</main>

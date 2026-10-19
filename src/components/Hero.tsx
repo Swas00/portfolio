@@ -20,26 +20,26 @@ export default function Hero() {
   });
 
   return (
-    <section ref={ref} className="relative min-h-[100svh] overflow-hidden px-5 pb-10 pt-28 md:px-10">
-      <motion.div style={{ y: beamY, scale: beamScale }} className="pointer-events-none absolute inset-y-0 right-[-18%] w-[95%] md:right-[-6%] md:w-[68%]">
+    <section ref={ref} className="relative flex min-h-[max(100svh,640px)] flex-col overflow-hidden px-5 pb-8 pt-24 md:px-10">
+      <motion.div data-bg style={{ y: beamY, scale: beamScale }} className="pointer-events-none absolute inset-y-0 right-[-18%] w-[95%] md:right-[-6%] md:w-[68%]">
         <Beam className="h-full w-full" />
       </motion.div>
 
-      <motion.div style={{ y: textY }} className="relative mx-auto flex min-h-[calc(100svh-9.5rem)] max-w-[1500px] flex-col justify-end">
-        <motion.p {...fade(0.1)} className="eyebrow mb-6 text-muted">
+      <motion.div style={{ y: textY }} className="relative mx-auto flex w-full max-w-[1500px] flex-1 flex-col justify-center py-6">
+        <motion.p {...fade(0.1)} className="eyebrow mb-5 text-muted">
           Full-stack developer · Applied ML
         </motion.p>
-        <h1 className="display max-w-[16ch] text-[clamp(3.2rem,9.5vw,9.5rem)]">
+        <h1 className="display max-w-[16ch] text-[clamp(3rem,min(9.5vw,16vh),9.5rem)]">
           <SplitText text="I build software that" immediate delay={INTRO} />{" "}
           <em className="text-accent">
             <SplitText text="shows its reasoning." immediate delay={INTRO + 0.25} />
           </em>
         </h1>
-        <motion.p {...fade(0.9)} className="mt-8 max-w-xl text-lg leading-relaxed text-ink/80 md:text-xl">
+        <motion.p {...fade(0.9)} className="mt-6 max-w-xl text-lg leading-relaxed text-ink/80 md:text-xl">
           MCA student at CHRIST in Bengaluru. I build explainable ML systems and real-time web apps, and I came to
           software from physics research.
         </motion.p>
-        <motion.div {...fade(1.05)} className="mt-9 flex flex-wrap items-center gap-4">
+        <motion.div {...fade(1.05)} className="mt-7 flex flex-wrap items-center gap-4">
           <a href="#work" className="group inline-flex items-center gap-3 bg-ink px-6 py-3.5 text-paper transition-colors hover:bg-accent">
             See selected work
             <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-y-0.5">↓</span>
@@ -50,7 +50,7 @@ export default function Hero() {
 
       <motion.dl
         {...fade(1.2)}
-        className="relative mx-auto mt-12 grid max-w-[1500px] grid-cols-2 gap-6 border-t border-line pt-5 md:grid-cols-4"
+        className="relative mx-auto mt-4 grid w-full max-w-[1500px] grid-cols-2 gap-6 border-t border-line pt-5 md:grid-cols-4"
       >
         {[
           ["Based in", "Bengaluru, India"],

@@ -115,7 +115,7 @@ body {
 }
 
 /* Section content sits above the fixed scroll backdrop (z-1); section backgrounds sit below it. */
-main > section > div,
+main > section > div:not([data-bg]),
 main > article > div {
   position: relative;
   z-index: 2;

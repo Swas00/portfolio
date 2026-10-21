@@ -1,7 +1,8 @@
 import Hero from "@/components/Hero";
+import Marquee from "@/components/Marquee";
 import About from "@/components/About";
-import Work from "@/components/Work";
 import Skills from "@/components/Skills";
+import Work from "@/components/Work";
 import Path from "@/components/Path";
 import Contact from "@/components/Contact";
 import { profile } from "@/data/profile";
@@ -20,9 +21,10 @@ export default function Home() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <Hero />
+      <Marquee />
       <About />
-      <Work />
       <Skills />
+      <Work />
       <Path />
       <Contact />
     </>

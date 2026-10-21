@@ -28,7 +28,7 @@ export const skillGroups = [
   },
   {
     title: "Backend & APIs",
-    used: ["Node.js", "Express", "FastAPI", "REST", "Socket.IO", "JWT auth", "Prisma", "Jest + Supertest"],
+    used: ["Node.js", "Express", "FastAPI", "REST APIs", "Socket.IO", "JWT auth", "Prisma", "Jest + Supertest"],
   },
   {
     title: "Data",
@@ -52,7 +52,7 @@ export const experience = [
     org: "Amity University, Noida",
     points: [
       "Ran data analysis and simulations in Python and MATLAB for physics-based systems and models.",
-      "Interpreted complex datasets to surface patterns and trends behind the findings.",
+      "Interpreted complex datasets to identify patterns and trends that supported the findings.",
       "Applied statistical techniques to improve the reliability of results.",
     ],
   },
@@ -61,7 +61,7 @@ export const experience = [
     title: "Research Intern",
     org: "Amity University, Noida",
     points: [
-      "Assisted research on particle accelerators and their applications through analytical modelling.",
+      "Assisted with research on particle accelerators and their applications through analytical modelling.",
       "Worked with scientific datasets to run calculations and derive insights.",
       "Documented observations and presented findings in a structured format.",
     ],

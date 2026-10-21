@@ -1,123 +1,140 @@
 "use client";
-import Link from "next/link";
-import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { featured, others, type Project } from "@/data/projects";
-import { Reveal, SectionHeader, CountUp, EASE } from "./Reveal";
-import { ImportanceDiagram, ConflictDiagram } from "./Diagrams";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { projects, type Project } from "@/data/projects";
+import FadeIn from "./FadeIn";
+import { GhostButton } from "./Buttons";
+import { CountUp } from "./Reveal";
+import { ConflictDiagram, ImportanceDiagram } from "./Diagrams";
+import Decor, { type DecorKind } from "./Decor";
 
+const radius = "rounded-[32px] sm:rounded-[44px] md:rounded-[56px]";
+const panel = `${radius} border border-[#D7E2EA]/15 bg-[#141414] p-6 sm:p-8`;
 const Arrow = () => (
-  <svg className="transition-transform duration-300 group-hover/l:-translate-y-0.5 group-hover/l:translate-x-0.5" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <path d="M4 12L12 4M5 4h7v7" stroke="currentColor" strokeWidth="1.5" />
   </svg>
 );
 
-function ExtLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="link-draw group/l inline-flex items-center gap-1.5 py-1">
-      {children} <Arrow />
-    </a>
-  );
-}
+function Card({ p, i, n, progress }: { p: Project; i: number; n: number; progress: MotionValue<number> }) {
+  const target = 1 - (n - 1 - i) * 0.03;
+  const scale = useTransform(progress, [i / n, 1], [1, target]);
+  const num = String(i + 1).padStart(2, "0");
 
-function Featured({ p, flip, index }: { p: Project; flip: boolean; index: number }) {
   return (
-    <article className="grid items-center gap-10 py-20 md:grid-cols-12 md:gap-14 md:py-28">
-      <div className={`md:col-span-6 ${flip ? "md:order-2 md:col-start-7" : ""}`}>
-        <Reveal>
-          <p className="eyebrow text-accent-bright">0{index + 1} — {p.year}</p>
-          <h3 className="display mt-4 text-[clamp(2.6rem,6vw,5.5rem)]">{p.name}</h3>
-          <p className="mt-5 text-xl text-paper/90">{p.tagline}</p>
-          <p className="mt-4 max-w-lg leading-relaxed text-muted-dark">{p.summary}</p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <dl className="mt-8 grid max-w-md grid-cols-3 gap-4 border-y border-line-dark py-5">
-            {p.facts.map((f, i) => (
-              <div key={f.label}>
-                <dd className="display text-3xl">{f.count ? <CountUp value={f.value} delay={0.2 + i * 0.3} /> : f.value}</dd>
-                <dt className="eyebrow mt-1 text-muted-dark">{f.label}</dt>
+    <div className="stack-wrap">
+      <div className="stack-sticky" style={{ "--top": `calc(6rem + ${i * 28}px)` } as React.CSSProperties}>
+        <motion.article
+          style={{ scale, transformOrigin: "top center" }}
+          className={`stack-card ${radius} border-2 border-[#D7E2EA] bg-[#0C0C0C] p-4 sm:p-6 md:p-8`}
+        >
+          <div className="flex flex-wrap items-start justify-between gap-x-8 gap-y-5">
+            <div className="flex items-start gap-4 sm:gap-8">
+              <span className="text-[clamp(3rem,10vw,140px)] font-black leading-none text-[#D7E2EA]">{num}</span>
+              <div className="pt-1 sm:pt-3">
+                <p className="eyebrow text-muted">{p.featured ? "Featured · Case study" : "Also built"} · {p.year}</p>
+                <h3 className="mt-1 text-[clamp(1.4rem,3vw,2.6rem)] font-medium uppercase leading-tight">{p.name}</h3>
+                <p className="mt-1 max-w-md font-light text-[#D7E2EA]/80">{p.tagline}</p>
               </div>
-            ))}
-          </dl>
-          <ul className="mt-6 flex flex-wrap gap-2">
-            {p.stack.map((s) => (
-              <li key={s} className="eyebrow border border-line-dark px-2.5 py-1 text-muted-dark transition-colors duration-200 hover:border-paper/50 hover:text-paper">{s}</li>
-            ))}
-          </ul>
-          <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2">
-            <Link href={`/work/${p.slug}`} data-cursor="Read" className="group/l inline-flex items-center gap-2 bg-paper px-5 py-3 text-ink transition-[background-color,transform] duration-200 hover:bg-accent-bright active:translate-y-px">
-              Case study <Arrow />
-            </Link>
-            <ExtLink href={p.repo}>Source</ExtLink>
-            {p.live && <ExtLink href={p.live}>Live demo</ExtLink>}
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {p.caseStudy && (
+                <GhostButton href={`/work/${p.slug}`} className="group">
+                  Case study <Arrow />
+                </GhostButton>
+              )}
+              <GhostButton href={p.repo} target="_blank" rel="noopener noreferrer">
+                Source <Arrow />
+              </GhostButton>
+              {p.live && (
+                <GhostButton href={p.live} target="_blank" rel="noopener noreferrer">
+                  Live demo <Arrow />
+                </GhostButton>
+              )}
+            </div>
           </div>
-        </Reveal>
+
+          <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-[40%_60%] md:gap-4">
+            <div className="flex flex-col gap-3 md:gap-4">
+              <div className={panel}>
+                <p className="eyebrow mb-3 text-muted">Summary</p>
+                <p className="font-light leading-relaxed">{p.summary}</p>
+              </div>
+              {p.facts.length > 0 ? (
+                <dl className={`${panel} flex flex-wrap gap-x-8 gap-y-5`}>
+                  {p.facts.map((f, k) => (
+                    <div key={f.label}>
+                      <dd className="hero-heading text-[clamp(1.3rem,2.2vw,2.2rem)] font-black leading-none">
+                        {f.count ? <CountUp value={f.value} delay={0.2 + k * 0.3} /> : f.value}
+                      </dd>
+                      <dt className="eyebrow mt-2 text-muted">{f.label}</dt>
+                    </div>
+                  ))}
+                </dl>
+              ) : (
+                <div className={panel}>
+                  <p className="eyebrow mb-2 text-muted">Year</p>
+                  <p className="hero-heading text-[clamp(2.4rem,5vw,4.5rem)] font-black leading-none">{p.year}</p>
+                </div>
+              )}
+            </div>
+
+            {p.slug === "dropoutguard-ai" ? (
+              <div className="flex flex-col gap-3 md:gap-4">
+                <ImportanceDiagram className={`${radius} !p-6 sm:!p-8`} />
+                <StackPanel p={p} />
+              </div>
+            ) : p.slug === "letscollab" ? (
+              <div className="flex flex-col gap-3 md:gap-4">
+                <ConflictDiagram className={`${radius} !p-6 sm:!p-8`} />
+                <StackPanel p={p} />
+              </div>
+            ) : (
+              <StackPanel p={p} tall decor={decor[i % decor.length]} />
+            )}
+          </div>
+        </motion.article>
       </div>
-      <Reveal delay={0.15} className={`md:col-span-6 ${flip ? "md:order-1 md:col-start-1" : ""}`}>
-        {p.slug === "dropoutguard-ai" ? <ImportanceDiagram /> : <ConflictDiagram />}
-      </Reveal>
-    </article>
+    </div>
   );
 }
 
-function OtherList() {
-  const [open, setOpen] = useState<string | null>(others[0]?.slug ?? null);
-  const reduce = useReducedMotion();
+const decor: DecorKind[] = ["sphere", "torus", "cube", "orb"];
+
+function StackPanel({ p, tall = false, decor: d }: { p: Project; tall?: boolean; decor?: DecorKind }) {
   return (
-    <ul className="border-t border-line-dark">
-      {others.map((p) => {
-        const isOpen = open === p.slug;
-        return (
-          <li key={p.slug} className="border-b border-line-dark transition-colors duration-300 hover:bg-ink-2 focus-within:bg-ink-2" onMouseEnter={() => setOpen(p.slug)}>
-            <button
-              onClick={() => setOpen(isOpen ? null : p.slug)}
-              aria-expanded={isOpen}
-              className="flex w-full items-baseline justify-between gap-6 px-2 py-6 text-left md:px-4"
-            >
-              <span className={`display text-4xl transition-colors duration-300 md:text-6xl ${isOpen ? "text-accent-bright" : "text-paper"}`}>{p.name}</span>
-              <span className="eyebrow hidden text-muted-dark md:block">{p.stack.slice(0, 3).join(" · ")}</span>
-              <span aria-hidden="true" className={`text-2xl leading-none text-muted-dark transition-transform duration-300 ${isOpen ? "rotate-45 text-accent-bright" : ""}`}>+</span>
-            </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={reduce ? false : { height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                  className="overflow-hidden"
-                >
-                  <div className="grid gap-6 px-2 pb-8 md:grid-cols-12 md:px-4">
-                    <p className="max-w-xl leading-relaxed text-paper/90 md:col-span-6 md:col-start-1">{p.summary}</p>
-                    <div className="flex flex-wrap content-start gap-x-7 gap-y-2 md:col-span-6 md:justify-end">
-                      <ExtLink href={p.repo}>Source</ExtLink>
-                      {p.live && <ExtLink href={p.live}>Live demo</ExtLink>}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+    <div className={`${panel} ${tall ? "relative min-h-[260px] overflow-hidden md:min-h-[320px]" : ""}`}>
+      {tall && d && <Decor kind={d} className="pointer-events-none absolute -bottom-6 -right-4 w-44 sm:w-56 md:w-64" />}
+      <p className="eyebrow mb-4 text-muted">Stack</p>
+      <ul className="relative flex flex-wrap gap-2">
+        {p.stack.map((s) => (
+          <li key={s} className="eyebrow rounded-full border border-[#D7E2EA]/25 px-4 py-1.5 text-[#D7E2EA] transition-colors duration-200 hover:bg-[#D7E2EA]/10">
+            {s}
           </li>
-        );
-      })}
-    </ul>
+        ))}
+      </ul>
+    </div>
   );
 }
 
 export default function Work() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   return (
-    <section id="work" className="on-dark bg-ink px-5 py-24 text-paper md:px-10 md:py-36">
-      <div className="mx-auto max-w-[1500px]">
-        <SectionHeader dark n="02" label="Selected work" title="Two systems built around a hard question, plus a few smaller builds." />
-        <div className="mt-8 divide-y divide-line-dark md:mt-16">
-          {featured.map((p, i) => (
-            <Featured key={p.slug} p={p} index={i} flip={i % 2 === 1} />
-          ))}
-        </div>
-        <div className="mt-16 md:mt-24">
-          <h3 className="eyebrow mb-6 text-muted-dark">Also built</h3>
-          <OtherList />
-        </div>
+    <section
+      id="work"
+      className="relative z-10 -mt-10 rounded-t-[40px] bg-[#0C0C0C] px-4 pb-24 pt-20 sm:-mt-12 sm:rounded-t-[50px] sm:px-6 sm:pt-24 md:-mt-14 md:rounded-t-[60px] md:px-10 md:pt-32"
+    >
+      <FadeIn as="h2" y={40} className="section-heading hero-heading mb-6">
+        Work
+      </FadeIn>
+      <FadeIn as="p" delay={0.1} className="mx-auto mb-16 max-w-2xl text-center text-[clamp(1rem,2vw,1.5rem)] font-light text-[#D7E2EA]/80 sm:mb-20 md:mb-28">
+        Two systems built around a hard question, plus a few smaller projects.
+      </FadeIn>
+      <div ref={ref} className="mx-auto flex max-w-[1500px] flex-col gap-6">
+        {projects.map((p, i) => (
+          <Card key={p.slug} p={p} i={i} n={projects.length} progress={scrollYProgress} />
+        ))}
       </div>
     </section>
   );

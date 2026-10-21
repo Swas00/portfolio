@@ -56,36 +56,36 @@ export default function Nav() {
     <>
       <motion.div
         aria-hidden="true"
-        className="fixed inset-x-0 top-0 z-[60] h-[2px] origin-left bg-accent-bright"
+        className="fixed inset-x-0 top-0 z-[60] h-[2px] origin-left bg-[linear-gradient(90deg,#b600a8,#7621b0,#be4c00)]"
         style={{ scaleX: progress }}
       />
-      <header className="fixed inset-x-0 top-0 z-50 mix-blend-difference text-paper">
-        <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between px-5 md:px-10">
-          <Link href="/" className="eyebrow link-draw" aria-label="Swastik Sahu, home">
+      <header className="fixed inset-x-0 top-0 z-50 text-[#D7E2EA] mix-blend-difference">
+        <div className="mx-auto flex h-16 max-w-[1800px] items-center justify-between px-6 pt-2 md:px-10 md:pt-4">
+          <Link href="/" className="link-draw text-sm font-medium uppercase tracking-wider md:text-lg" aria-label="Swastik Sahu, home">
             {profile.name}
           </Link>
-          <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
+          <nav aria-label="Primary" className="hidden items-center gap-8 md:flex lg:gap-12">
             {nav.map((n) => (
               <Link
                 key={n.id}
                 href={`/#${n.id}`}
                 aria-current={active === n.id ? "location" : undefined}
-                className="eyebrow link-draw relative"
+                className="link-draw relative text-sm font-medium uppercase tracking-wider transition-opacity duration-200 hover:opacity-70 lg:text-lg"
               >
-                <span className={`transition-opacity duration-300 ${active === n.id ? "opacity-100" : "opacity-60 hover:opacity-100"}`}>{n.label}</span>
+                <span>{n.label}</span>
                 {active === n.id && <motion.span layoutId="nav-dot" className="absolute -left-3 top-1/2 size-1.5 -translate-y-1/2 rounded-full bg-current" />}
               </Link>
             ))}
             <button
               onClick={() => setPalette(true)}
-              className="eyebrow border border-current px-2 py-1 opacity-70 transition-[opacity,transform] duration-200 hover:opacity-100 active:translate-y-px"
+              className="eyebrow rounded-full border border-current px-3 py-1 opacity-70 transition-[opacity,transform] duration-200 hover:opacity-100 active:translate-y-px"
               aria-label="Open command menu"
             >
               ⌘K
             </button>
           </nav>
           <button
-            className="eyebrow md:hidden"
+            className="eyebrow rounded-full border border-current px-4 py-1.5 md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((o) => !o)}
@@ -100,7 +100,7 @@ export default function Nav() {
           <motion.div
             key="mobile-menu"
             id="mobile-menu"
-            className="on-dark fixed inset-0 z-40 bg-ink px-5 pt-24 text-paper md:hidden"
+            className="fixed inset-0 z-40 bg-[#0C0C0C] px-6 pt-28 text-[#D7E2EA] md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -114,7 +114,7 @@ export default function Nav() {
             >
               {nav.map((n) => (
                 <motion.li key={n.id} variants={{ hide: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }}>
-                  <Link href={`/#${n.id}`} onClick={() => setOpen(false)} className="display block py-1 text-6xl transition-colors duration-200 active:text-accent-bright">
+                  <Link href={`/#${n.id}`} onClick={() => setOpen(false)} className="hero-heading block py-1 text-6xl font-black uppercase leading-none tracking-tight">
                     {n.label}
                   </Link>
                 </motion.li>

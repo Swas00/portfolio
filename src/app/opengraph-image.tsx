@@ -7,10 +7,11 @@ export const contentType = "image/png";
 export default function Image() {
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: 80, background: "#f1ede3", color: "#14130f" }}>
-        <div style={{ fontSize: 26, letterSpacing: 4, textTransform: "uppercase", color: "#5d5a50" }}>Swastik Sahu · Full-stack developer</div>
-        <div style={{ fontSize: 104, lineHeight: 1, marginTop: 24, display: "flex", flexWrap: "wrap" }}>
-          I build software that <span style={{ color: "#c8321d", marginLeft: 24 }}>shows its reasoning.</span>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: 80, background: "#0c0c0c", color: "#d7e2ea" }}>
+        <div style={{ fontSize: 26, letterSpacing: 4, textTransform: "uppercase", color: "#8f9aa5" }}>Full-stack developer · Applied ML</div>
+        <div style={{ fontSize: 150, fontWeight: 900, lineHeight: 1, marginTop: 20, textTransform: "uppercase", color: "#bbccd7" }}>Swastik Sahu</div>
+        <div style={{ fontSize: 44, marginTop: 24, display: "flex" }}>
+          I build software that <span style={{ color: "#d27bff", marginLeft: 14 }}>shows its reasoning.</span>
         </div>
       </div>
     ),

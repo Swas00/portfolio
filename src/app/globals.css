@@ -1,72 +1,76 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f1ede3;
-  --paper-2: #e7e2d4;
-  --ink: #14130f;
-  --ink-2: #1d1c17;
-  --muted: #5d5a50;
-  --muted-dark: #a9a597;
-  --line: rgba(20, 19, 15, 0.16);
-  --line-dark: rgba(241, 237, 227, 0.16);
-  --accent: #c8321d; /* 4.9:1 on paper, for text */
-  --accent-bright: #ff5a3c; /* 5.9:1 on ink */
+  --bg: #0c0c0c;
+  --fg: #d7e2ea;
+  --muted: #8f9aa5;
+  --line: rgba(215, 226, 234, 0.16);
+  --accent: #d27bff;
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
   --color-muted: var(--muted);
-  --color-muted-dark: var(--muted-dark);
   --color-line: var(--line);
-  --color-line-dark: var(--line-dark);
   --color-accent: var(--accent);
-  --color-accent-bright: var(--accent-bright);
-  --font-sans: var(--font-sans-body);
-  --font-serif: var(--font-display);
+  /* aliases kept so the diagram and palette components keep working */
+  --color-ink: #0c0c0c;
+  --color-ink-2: #141414;
+  --color-paper: #eaf1f6;
+  --color-line-dark: var(--line);
+  --color-muted-dark: var(--muted);
+  --color-accent-bright: var(--accent);
+  --font-sans: var(--font-kanit);
   --font-mono: var(--font-mono-body);
 }
 
+* { box-sizing: border-box; }
+
 html {
+  background: var(--bg);
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-sans-body), system-ui, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-kanit), "Kanit", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-::selection {
-  background: var(--accent);
-  color: var(--paper);
-}
+::selection { background: #7621b0; color: #fff; }
 
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 2px;
 }
-.on-dark :focus-visible {
-  outline-color: var(--accent-bright);
+.on-light :focus-visible { outline-color: #7621b0; }
+
+.hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .eyebrow {
-  font-family: var(--font-mono-body), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
-.display {
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 400;
+.section-heading {
+  font-size: clamp(3rem, 12vw, 160px);
+  font-weight: 900;
+  line-height: 1;
   letter-spacing: -0.025em;
-  line-height: 0.95;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 /* Underline that draws in from the left */
@@ -75,28 +79,76 @@ body {
   transition: background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .link-draw:hover,
-.link-draw:focus-visible {
-  background-size: 100% 1px;
+.link-draw:focus-visible { background-size: 100% 1px; }
+
+/* Gradient pill for the primary action */
+.btn-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: linear-gradient(123deg, #18011f 7%, #b600a8 37%, #7621b0 72%, #be4c00 100%);
+  box-shadow: 0px 4px 4px rgba(181, 1, 167, 0.25), 4px 4px 12px #7721b1 inset;
+  outline: 2px solid #fff;
+  outline-offset: -3px;
+  color: #fff;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.btn-contact:hover { filter: brightness(1.15); }
+.btn-contact:active { transform: translateY(1px) scale(0.99); }
+.btn-contact:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 9999px; }
+
+/* Continuous marquee: two identical copies, the track slides by exactly one copy and loops. Independent of scroll. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--dur, 60s) linear infinite;
+  will-change: transform;
+}
+.marquee-track.reverse { animation-direction: reverse; }
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track { animation-play-state: paused; }
+
+/* Project stack: cards stick and scale only when the screen is large enough to hold a whole card. */
+@media (min-width: 768px) and (min-height: 820px) {
+  .stack-wrap { height: 92vh; }
+  .stack-sticky { position: sticky; top: var(--top); }
+}
+@media not all and (min-width: 768px) and (min-height: 820px) {
+  .stack-card { transform: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  /* Scroll reveals start hidden in the server HTML. Reduced-motion visitors get all content immediately. */
+  /* Reveals start hidden in the server HTML. Reduced-motion visitors get all content immediately. */
   main [style*="opacity:0"],
   main [style*="translateY"],
+  main [style*="translateX"],
   main [style*="scale"] {
     opacity: 1 !important;
     transform: none !important;
   }
+  /* Reduced motion: no looping. Show one static, wrapped copy instead. */
+  .marquee { -webkit-mask-image: none; mask-image: none; }
+  .marquee-track { animation: none !important; width: auto; will-change: auto; }
+  .marquee-track > * { flex-wrap: wrap; flex-shrink: 1; row-gap: 0.75rem; padding: 0 1.25rem; }
+  .marquee-rep { display: none; } /* loop-length filler, not needed when static */
+  .marquee-decor { display: none; } /* purely decorative duplicate of the skills list */
+  .marquee-dup { display: none !important; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* Section content sits above the fixed scroll backdrop (z-1); section backgrounds sit below it. */
-main > section > div:not([data-bg]),
-main > article > div {
-  position: relative;
-  z-index: 2;
 }

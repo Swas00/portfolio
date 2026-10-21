@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { DUR, EASE, VIEWPORT } from "./Reveal";
 
 /** Real feature-importance figures from the DropoutGuard README. Bars grow from zero to the documented values. */
-export function ImportanceDiagram() {
+export function ImportanceDiagram({ className = "" }: { className?: string }) {
   const [active, setActive] = useState<number | null>(null);
   const rows = [
     ["Curricular backlogs", 40.5],
@@ -16,10 +16,10 @@ export function ImportanceDiagram() {
   const ticks = [0, 10, 20, 30, 40];
 
   return (
-    <figure className="border border-line-dark bg-ink-2 p-6 md:p-8">
+    <figure className={`border border-line-dark bg-ink-2 p-6 md:p-8 ${className}`}>
       <figcaption className="eyebrow mb-6 flex justify-between gap-4 text-muted-dark">
         <span>Why was this student flagged?</span>
-        <span>RF feature importance, %</span>
+        <span>Random Forest feature importance (%)</span>
       </figcaption>
 
       <div className="relative">
@@ -61,7 +61,7 @@ export function ImportanceDiagram() {
           <span key={t} className="absolute -translate-x-1/2 first:translate-x-0" style={{ left: `${(t / MAX) * 100}%` }}>{t}</span>
         ))}
       </div>
-      <p className="eyebrow mt-6 text-muted-dark">Diagram of figures from the project README. Not a screenshot.</p>
+      <p className="eyebrow mt-6 text-muted-dark">Diagram based on figures from the project README. Not a screenshot.</p>
     </figure>
   );
 }
@@ -85,10 +85,10 @@ const steps = [
 ] as const;
 
 /** Illustrates the 409 flow. Steps light up in order along a connector line. Readable without animation. */
-export function ConflictDiagram() {
+export function ConflictDiagram({ className = "" }: { className?: string }) {
   const at = (i: number) => 0.3 + i * 0.55;
   return (
-    <figure className="border border-line-dark bg-ink-2 p-6 md:p-8">
+    <figure className={`border border-line-dark bg-ink-2 p-6 md:p-8 ${className}`}>
       <figcaption className="eyebrow mb-6 text-muted-dark">Two people edit task #12</figcaption>
       <ol className="relative space-y-3 pl-9 font-mono text-sm">
         <motion.span

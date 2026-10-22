@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { animate, motion, useInView, useReducedMotion } from "motion/react";
+import { animate, motion, useInView } from "motion/react";
 
 export const EASE = [0.22, 1, 0.36, 1] as const;
 export const DUR = { fast: 0.25, base: 0.7, slow: 0.95 } as const;
@@ -95,17 +95,16 @@ const fmt = (n: number, p: NonNullable<ReturnType<typeof parse>>) =>
 export function CountUp({ value, delay = 0, className }: { value: string; delay?: number; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
-  const reduce = useReducedMotion();
 
   useEffect(() => {
     const p = parse(value);
-    if (reduce || !p || !ref.current) return;
+    if (!p || !ref.current) return;
     ref.current.textContent = fmt(0, p);
-  }, [value, reduce]);
+  }, [value]);
 
   useEffect(() => {
     const p = parse(value);
-    if (!inView || reduce || !p || !ref.current) return;
+    if (!inView || !p || !ref.current) return;
     const el = ref.current;
     const c = animate(0, p.target, {
       duration: 1.5,
@@ -115,7 +114,7 @@ export function CountUp({ value, delay = 0, className }: { value: string; delay?
       onComplete: () => (el.textContent = value),
     });
     return () => c.stop();
-  }, [inView, reduce, value, delay]);
+  }, [inView, value, delay]);
 
   return (
     <span ref={ref} className={className}>

@@ -21,7 +21,7 @@ export default function Magnet({
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !window.matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)").matches) return;
+    if (!el || !window.matchMedia("(pointer: fine)").matches) return;
     const move = (e: MouseEvent) => {
       const r = el.getBoundingClientRect();
       const cx = r.left + r.width / 2;

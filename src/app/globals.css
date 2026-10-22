@@ -129,26 +129,3 @@ body {
 @media not all and (min-width: 768px) and (min-height: 820px) {
   .stack-card { transform: none !important; }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  /* Reveals start hidden in the server HTML. Reduced-motion visitors get all content immediately. */
-  main [style*="opacity:0"],
-  main [style*="translateY"],
-  main [style*="translateX"],
-  main [style*="scale"] {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  /* Reduced motion: no looping. Show one static, wrapped copy instead. */
-  .marquee { -webkit-mask-image: none; mask-image: none; }
-  .marquee-track { animation: none !important; width: auto; will-change: auto; }
-  .marquee-track > * { flex-wrap: wrap; flex-shrink: 1; row-gap: 0.75rem; padding: 0 1.25rem; }
-  .marquee-rep { display: none; } /* loop-length filler, not needed when static */
-  .marquee-decor { display: none; } /* purely decorative duplicate of the skills list */
-  .marquee-dup { display: none !important; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
